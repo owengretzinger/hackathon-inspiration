@@ -2,9 +2,10 @@ import {
   integer,
   json,
   pgTableCreator,
-
   text,
   timestamp,
+  boolean,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -57,6 +58,16 @@ export const winningProjects = createTable('winning_projects', {
   }>().notNull().default({ likes: 0, comments: 0 }),
   hackathonUrl: text('hackathon_url').notNull(),
   hackathonName: text('hackathon_name').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const newsletterSubscribers = createTable('newsletter_subscribers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email').notNull().unique(),
+  isVerified: boolean('is_verified').notNull().default(false),
+  verificationToken: text('verification_token'),
+  verificationTokenExpiresAt: timestamp('verification_token_expires_at'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

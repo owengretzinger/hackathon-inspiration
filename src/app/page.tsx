@@ -10,6 +10,7 @@ import {
 } from "~/components/project";
 import { ProjectSkeleton } from "~/components/project/project-skeleton";
 import { useProjects } from "~/lib/hooks/useProjects";
+import { ProjectInfo } from "~/components/project/project-info";
 
 export default function InspirationPage() {
   const {
@@ -97,40 +98,11 @@ export default function InspirationPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <Card className="h-fit">
-            <CardContent className="pt-6">
-              <div className="flex flex-col gap-6">
-                <div>
-                  <h3 className="font-semibold">About Hackathon Inspiration</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    A tool that helps you discover winning hackathon projects from Devpost. Get inspired by real successful projects and learn from their implementations.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold">How it Works</h3>
-                  <div className="mt-2 space-y-2 text-sm text-muted-foreground">
-                    <p>• Projects are scraped from Devpost hackathons</p>
-                    <p>• Only winning projects are included</p>
-                    <p>• View demo videos, source code, and live demos</p>
-                    <p>• Explore technologies used and team details</p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold">Current Project</h3>
-                  <div className="mt-2 space-y-2 text-sm text-muted-foreground">
-                    <p>Viewing {viewedProjectCount} of {totalProjects} projects</p>
-                  </div>
-                </div>
-
-                <Button size="lg" onClick={handleNextProject} className="gap-2 w-full">
-                  Next Project
-                  <span className="rounded border px-2 py-0.5 text-xs">Space</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ProjectInfo
+            viewedProjectCount={viewedProjectCount ?? 0}
+            totalProjects={totalProjects ?? 0}
+            onNextProject={handleNextProject}
+          />
         </div>
       </div>
     </div>

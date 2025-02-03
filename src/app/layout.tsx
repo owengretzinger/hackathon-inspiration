@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { ThemeProvider } from "~/components/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Nav } from "~/components/nav";
+import { Toaster } from "~/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "HackMate",
@@ -35,6 +36,7 @@ export default function RootLayout({
               <main className="mx-auto w-full max-w-7xl flex-1 px-4">
                 {children}
               </main>
+              <Toaster />
             </div>
           </TRPCReactProvider>
         </ThemeProvider>
