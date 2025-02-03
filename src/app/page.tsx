@@ -30,7 +30,7 @@ export default function InspirationPage() {
           <div className="flex justify-center">
             <Button size="lg" disabled className="gap-2">
               Next Project
-              <span className="rounded border px-2 py-0.5 text-xs">Space</span>
+              <span className="rounded border px-2 py-0.5 text-xs hidden md:block">Space</span>
             </Button>
           </div>
         </div>
@@ -56,8 +56,8 @@ export default function InspirationPage() {
   }
 
   return (
-    <div className="container mx-auto flex min-h-screen flex-col items-center gap-8 p-8">
-      <div className="grid w-full max-w-[1600px] grid-cols-1 gap-8 lg:grid-cols-[1fr,400px]">
+    <div className="container mx-auto flex min-h-screen flex-col items-center gap-4 p-4 sm:gap-8 sm:p-8">
+      <div className="grid w-full max-w-[1600px] grid-cols-1 gap-4 sm:gap-8 lg:grid-cols-[1fr,400px]">
         <div className="flex flex-col gap-4">
           <Card className="w-full">
             <ProjectHeader
@@ -98,7 +98,7 @@ export default function InspirationPage() {
           </Card>
         </div>
 
-        <div className="flex flex-col-reverse md:flex-col gap-8">
+        <div className="flex flex-col-reverse md:flex-col gap-4 sm:gap-8">
           <InfoCard />
           <Button
             size="lg"
@@ -106,7 +106,7 @@ export default function InspirationPage() {
             className="w-full gap-2"
           >
             Next Project
-            <span className="rounded border px-2 py-0.5 text-xs">Space</span>
+            <span className="rounded border px-2 py-0.5 text-xs hidden md:block">Space</span>
           </Button>
         </div>
       </div>

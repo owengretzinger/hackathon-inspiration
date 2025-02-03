@@ -32,10 +32,10 @@ export function ProjectGallery({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
         {/* Main Image - either first gallery image or thumbnail */}
         <div
-          className="relative col-span-2 aspect-video cursor-pointer overflow-hidden rounded-lg transition-opacity hover:opacity-95"
+          className="relative col-span-1 aspect-video cursor-pointer overflow-hidden rounded-lg transition-opacity hover:opacity-95 sm:col-span-2"
           onClick={() => {
             setCurrentImageIndex(0);
             setModalOpen(true);

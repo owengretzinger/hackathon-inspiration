@@ -6,15 +6,12 @@ export function ProjectSkeleton() {
     <Card className="w-full">
       <CardHeader>
         <div className="w-full space-y-6">
-          {/* Header */}
-          <div className="flex w-full justify-between">
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-8 w-64" />
-              <div className="flex gap-2">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-9 w-9 rounded-lg" />
-                ))}
-              </div>
+          {/* Links and Engagement Stats */}
+          <div className="flex w-full items-center justify-between">
+            <div className="flex gap-2">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-9 w-9 rounded-lg" />
+              ))}
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -26,6 +23,11 @@ export function ProjectSkeleton() {
                 <Skeleton className="h-4 w-8" />
               </div>
             </div>
+          </div>
+
+          {/* Title */}
+          <div className="w-full">
+            <Skeleton className="h-8 w-64" />
           </div>
 
           {/* Team */}

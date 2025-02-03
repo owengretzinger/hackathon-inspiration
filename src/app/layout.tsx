@@ -33,7 +33,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             <div className="relative flex min-h-screen flex-col">
               <Nav />
-              <main className="mx-auto w-full max-w-7xl flex-1 px-4">
+              <main className="mx-auto w-full max-w-7xl flex-1">
                 {children}
               </main>
               <Toaster />

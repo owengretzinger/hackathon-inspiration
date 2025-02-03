@@ -4,8 +4,8 @@ import { NewsletterForm } from "~/components/newsletter-form";
 export function InfoCard() {
   return (
     <Card className="h-fit">
-      <CardContent className="pt-6">
-        <div className="flex flex-col gap-6">
+      <CardContent className="p-4 sm:pt-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
           <div>
             <h3 className="font-semibold">How It Works</h3>
             <div className="mt-2 space-y-2 text-sm text-muted-foreground">
