@@ -10,7 +10,7 @@ import {
 } from "~/components/project";
 import { ProjectSkeleton } from "~/components/project/project-skeleton";
 import { useProjects } from "~/lib/hooks/useProjects";
-import { ProjectInfo } from "~/components/project/project-info";
+import { InfoCard } from "~/components/info-card";
 
 export default function InspirationPage() {
   const {
@@ -98,7 +98,7 @@ export default function InspirationPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <ProjectInfo
+          <InfoCard
             viewedProjectCount={viewedProjectCount ?? 0}
             totalProjects={totalProjects ?? 0}
             onNextProject={handleNextProject}

@@ -2,17 +2,17 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { NewsletterForm } from "~/components/newsletter-form";
 
-interface ProjectInfoProps {
+interface InfoCardProps {
   viewedProjectCount: number;
   totalProjects: number;
   onNextProject: () => void;
 }
 
-export function ProjectInfo({
+export function InfoCard({
   viewedProjectCount,
   totalProjects,
   onNextProject,
-}: ProjectInfoProps) {
+}: InfoCardProps) {
   return (
     <Card className="h-fit">
       <CardContent className="pt-6">
