@@ -61,12 +61,14 @@ export default function InspirationPage() {
   >({});
   const [modalOpen, setModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [newProjectsReady, setNewProjectsReady] = useState<typeof projects | undefined>(undefined);
+  const [newProjectsReady, setNewProjectsReady] = useState<
+    typeof projects | undefined
+  >(undefined);
 
   useEffect(() => {
     // Only set initial project index on first mount
     if (!projects?.length) return;
-    
+
     // If we have new projects ready and we're at the end of current projects
     if (newProjectsReady && currentProjectIndex === projects.length - 1) {
       setCurrentProjectIndex(0);
@@ -441,7 +443,8 @@ export default function InspirationPage() {
                       {/* Image counter */}
                       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-sm text-white">
                         {currentImageIndex + 1} /{" "}
-                        {currentProject.galleryImages.length}
+                        {currentProject.galleryImages.length ||
+                          (currentProject.thumbnail ? 1 : 0)}
                       </div>
                     </div>
                   </DialogContent>
