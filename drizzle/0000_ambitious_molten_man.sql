@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS "winning_projects" (
+	"id" text PRIMARY KEY NOT NULL,
+	"title" text NOT NULL,
+	"tagline" text,
+	"description" text,
+	"devpost_url" text NOT NULL,
+	"thumbnail_url" text,
+	"technologies" json DEFAULT '[]'::json NOT NULL,
+	"awards" json DEFAULT '[]'::json NOT NULL,
+	"demo_video" json,
+	"gallery_images" json DEFAULT '[]'::json NOT NULL,
+	"team_size" integer,
+	"github_url" text,
+	"website_url" text,
+	"team_members" json DEFAULT '[]'::json NOT NULL,
+	"engagement" json DEFAULT '{"likes":0,"comments":0}'::json NOT NULL,
+	"hackathon_url" text NOT NULL,
+	"hackathon_name" text NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "winning_projects_devpost_url_unique" UNIQUE("devpost_url")
+);
