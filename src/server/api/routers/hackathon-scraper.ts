@@ -8,8 +8,16 @@ import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { env } from "~/env";
+import { sql } from "drizzle-orm";
 
 type HackathonProject = typeof winningProjects.$inferInsert;
+
+async function getNextProjectIndex() {
+  const result = await db
+    .select({ maxIndex: sql<number>`COALESCE(MAX("index"), 0)` })
+    .from(winningProjects);
+  return (result[0]?.maxIndex ?? 0) + 1;
+}
 
 export const hackathonScraperRouter = createTRPCRouter({
   scrapeHackathon: publicProcedure
@@ -199,12 +207,12 @@ export const hackathonScraperRouter = createTRPCRouter({
           );
 
           // Filter to only winning projects and apply limit if specified
-          const winningProjects = uniqueProjects
+          const scrapedProjects = uniqueProjects
             .filter((p) => p.isWinner && p.devpostUrl) // Also ensure devpostUrl exists
             .slice(0, input.limit);
 
           console.log(
-            `🏆 Found ${winningProjects.length} winning projects to process out of ${uniqueProjects.length} total`,
+            `🏆 Found ${scrapedProjects.length} winning projects to process out of ${uniqueProjects.length} total`,
           );
 
           // Visit each winning project page to get detailed info
@@ -212,7 +220,7 @@ export const hackathonScraperRouter = createTRPCRouter({
           let successCount = 0;
           let errorCount = 0;
 
-          for (const project of winningProjects) {
+          for (const project of scrapedProjects) {
             if (!project.devpostUrl) continue;
 
             console.log(`\n🔍 Visiting project: ${project.title}`);
@@ -619,8 +627,10 @@ export const hackathonScraperRouter = createTRPCRouter({
                 ),
               );
 
+              const nextIndex = await getNextProjectIndex();
               const projectData: HackathonProject = {
                 id: randomUUID(),
+                index: nextIndex,
                 title: project.title,
                 tagline: project.tagline ?? null,
                 description: details.fullDescription ?? null,
@@ -648,20 +658,21 @@ export const hackathonScraperRouter = createTRPCRouter({
                   .onConflictDoUpdate({
                     target: winningProjects.devpostUrl,
                     set: {
-                      title: project.title,
-                      tagline: project.tagline ?? null,
-                      description: details.fullDescription ?? null,
-                      technologies: details.technologies,
-                      awards: details.awards,
-                      galleryImages: details.galleryImages,
-                      demoVideo: details.demoVideo,
-                      engagement: details.engagement,
-                      teamMembers: details.teamMembers,
-                      teamSize: details.teamSize,
-                      githubUrl: details.githubUrl,
-                      websiteUrl: details.websiteUrl,
-                      thumbnail: project.thumbnailUrl,
-                      updatedAt: new Date(),
+                      index: projectData.index,
+                      title: projectData.title,
+                      tagline: projectData.tagline,
+                      description: projectData.description,
+                      technologies: projectData.technologies,
+                      awards: projectData.awards,
+                      galleryImages: projectData.galleryImages,
+                      demoVideo: projectData.demoVideo,
+                      engagement: projectData.engagement,
+                      teamMembers: projectData.teamMembers,
+                      teamSize: projectData.teamSize,
+                      githubUrl: projectData.githubUrl,
+                      websiteUrl: projectData.websiteUrl,
+                      thumbnail: projectData.thumbnail,
+                      updatedAt: projectData.updatedAt,
                     },
                   });
                 console.log(
@@ -681,8 +692,10 @@ export const hackathonScraperRouter = createTRPCRouter({
                 error,
               );
               // Still add the project, just without the extra details
+              const nextIndex = await getNextProjectIndex();
               const projectData: HackathonProject = {
                 id: randomUUID(),
+                index: nextIndex,
                 title: project.title,
                 tagline: project.tagline ?? null,
                 description: null,
@@ -716,25 +729,7 @@ export const hackathonScraperRouter = createTRPCRouter({
                   .values(projectData)
                   .onConflictDoUpdate({
                     target: winningProjects.devpostUrl,
-                    set: {
-                      title: project.title,
-                      tagline: project.tagline ?? null,
-                      description: null,
-                      technologies: [],
-                      awards: [
-                        {
-                          category: "Unknown - Error Fetching Details",
-                          place: "Winner",
-                          description: null,
-                          prize: undefined,
-                        },
-                      ],
-                      galleryImages: [],
-                      demoVideo: null,
-                      engagement: { likes: 0, comments: 0 },
-                      teamMembers: [],
-                      updatedAt: new Date(),
-                    },
+                    set: projectData,
                   });
                 console.log(
                   `✅ Successfully stored basic project info: ${project.title}`,
@@ -769,10 +764,12 @@ export const hackathonScraperRouter = createTRPCRouter({
           await writeFile(
             path.join(debugDir, "winning-projects.json"),
             JSON.stringify(
-              winningProjects.map((p) => ({
-                title: p.title,
-                devpostUrl: p.devpostUrl,
-              })),
+              scrapedProjects.map(
+                (p: { title: string; devpostUrl: string }) => ({
+                  title: p.title,
+                  devpostUrl: p.devpostUrl,
+                }),
+              ),
               null,
               2,
             ),

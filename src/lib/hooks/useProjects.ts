@@ -2,28 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "~/trpc/react";
 
 export function useProjects() {
-  const [currentProjectIndex, setCurrentProjectIndex] = useState<number>(0);
-  const [viewedProjectCount, setViewedProjectCount] = useState<number>(1);
-  const [newProjectsReady, setNewProjectsReady] = useState<typeof projects>(undefined);
-
-  const {
-    data: projects,
-    isLoading,
-    refetch,
-  } = api.inspiration.getRandomProjects.useQuery(
-    { limit: 10 },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      trpc: {
-        context: {
-          skipBatch: true,
-        },
-      },
-    },
-  );
-
+  // Get total projects first
   const { data: totalProjects } = api.inspiration.getTotalProjectCount.useQuery(
     undefined,
     {
@@ -33,55 +12,60 @@ export function useProjects() {
     },
   );
 
-  useEffect(() => {
-    if (!projects?.length) return;
+  // Start with a random index between 1 and totalProjects
+  const [currentIndex, setCurrentIndex] = useState<number>(() => {
+    if (!totalProjects) return 1;
+    return Math.floor(Math.random() * totalProjects) + 1;
+  });
+  const [viewedIndices, setViewedIndices] = useState<Set<number>>(() => new Set([currentIndex]));
 
-    if (newProjectsReady && currentProjectIndex === projects.length - 1) {
-      setCurrentProjectIndex(0);
-      setNewProjectsReady(undefined);
+  // Update currentIndex when totalProjects loads
+  useEffect(() => {
+    if (totalProjects) {
+      const randomIndex = Math.floor(Math.random() * totalProjects) + 1;
+      setCurrentIndex(randomIndex);
+      setViewedIndices(new Set([randomIndex]));
     }
-  }, [projects, currentProjectIndex, newProjectsReady]);
+  }, [totalProjects]);
+
+  const { data: currentProject, isLoading: isLoadingCurrent } = api.inspiration.getProjectByIndex.useQuery(
+    { index: currentIndex },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      enabled: !!totalProjects,
+    }
+  );
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === "Space" && projects?.length) {
+      if (e.code === "Space" && totalProjects) {
         e.preventDefault();
-        if (currentProjectIndex === projects.length - 1) {
-          void refetch().then((result) => {
-            if (result.data) setNewProjectsReady(result.data);
-          });
-        } else {
-          setCurrentProjectIndex((prev) => prev + 1);
-        }
-        setViewedProjectCount((count) => count + 1);
+        const nextIndex = Math.floor(Math.random() * totalProjects) + 1;
+        setCurrentIndex(nextIndex);
+        setViewedIndices(prev => new Set(prev).add(nextIndex));
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [projects, refetch, currentProjectIndex]);
+  }, [totalProjects]);
 
   const handleNextProject = useCallback(() => {
-    if (projects?.length) {
-      if (currentProjectIndex === projects.length - 1) {
-        void refetch().then((result) => {
-          if (result.data) setNewProjectsReady(result.data);
-        });
-      } else {
-        setCurrentProjectIndex((prev) => prev + 1);
-      }
-      setViewedProjectCount((count) => count + 1);
+    if (totalProjects) {
+      const nextIndex = Math.floor(Math.random() * totalProjects) + 1;
+      setCurrentIndex(nextIndex);
+      setViewedIndices(prev => new Set(prev).add(nextIndex));
     }
-  }, [projects, refetch, currentProjectIndex]);
-
-  const currentProject = projects?.[currentProjectIndex];
+  }, [totalProjects]);
 
   return {
-    projects,
     currentProject,
-    isLoading,
+    isLoading: isLoadingCurrent,
     totalProjects,
-    viewedProjectCount,
+    currentIndex,
+    viewedProjectCount: viewedIndices.size,
     handleNextProject,
   };
 } 

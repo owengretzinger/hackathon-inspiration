@@ -11,6 +11,7 @@ Hackathon Inspiration is a website that scrapes winning hackathon projects from 
 When helping with this project, please follow these guidelines:
 
 - **UI Components:** Always prefer using shadcn components. Install them using `npx shadcn@latest add <component>` (NOT `npx shadcn-ui@latest add`)
+- **Database Commands:** Use commands defined in `package.json` for database operations, like `npm run db:generate` or `npm run db:migrate`.
 - **Styling:** Use Tailwind CSS for styling. The project uses the New York style variant of shadcn
 - **Type Safety:** Maintain strict TypeScript types and leverage tRPC's type safety features
 - **Database:** Use Drizzle ORM for all database operations. Avoid raw SQL queries

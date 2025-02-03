@@ -3,11 +3,12 @@ import { z } from "zod";
 import { db } from "~/server/db";
 import { winningProjects } from "~/server/db/schema";
 import { sql } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 export const inspirationRouter = createTRPCRouter({
   getProjects: publicProcedure.query(async () => {
     return await db.query.winningProjects.findMany({
-      orderBy: (projects, { desc }) => [desc(projects.createdAt)],
+      orderBy: (projects, { asc }) => [asc(projects.index)],
     });
   }),
 
@@ -26,6 +27,27 @@ export const inspirationRouter = createTRPCRouter({
       });
 
       return randomProjects;
+    }),
+
+  getProjectByIndex: publicProcedure
+    .input(
+      z.object({
+        index: z.number().min(1),
+      }),
+    )
+    .query(async ({ input }) => {
+      const project = await db.query.winningProjects.findFirst({
+        where: (projects, { eq }) => eq(projects.index, input.index),
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Project with index ${input.index} not found`,
+        });
+      }
+
+      return project;
     }),
 
   getTotalProjectCount: publicProcedure.query(async () => {

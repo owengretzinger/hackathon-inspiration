@@ -18,6 +18,7 @@ export const createTable = pgTableCreator((name) => `${name}`);
 
 export const winningProjects = createTable('winning_projects', {
   id: text('id').primaryKey(),
+  index: integer('index').notNull().unique(),
   title: text('title').notNull(),
   tagline: text('tagline'),
   description: text('description'),

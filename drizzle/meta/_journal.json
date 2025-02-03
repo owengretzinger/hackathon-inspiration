@@ -15,6 +15,13 @@
       "when": 1738615034063,
       "tag": "0001_numerous_hercules",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1738617578245,
+      "tag": "0002_mysterious_shard",
+      "breakpoints": true
     }
   ]
 }

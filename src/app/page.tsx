@@ -7,6 +7,7 @@ import {
   ProjectGallery,
   ProjectDescription,
   ProjectFooter,
+  ProjectTechnologies,
 } from "~/components/project";
 import { ProjectSkeleton } from "~/components/project/project-skeleton";
 import { useProjects } from "~/lib/hooks/useProjects";
@@ -14,12 +15,11 @@ import { InfoCard } from "~/components/info-card";
 
 export default function InspirationPage() {
   const {
-    projects,
     currentProject,
     isLoading,
     totalProjects,
-    viewedProjectCount,
     handleNextProject,
+    currentIndex,
   } = useProjects();
 
   if (isLoading) {
@@ -38,7 +38,7 @@ export default function InspirationPage() {
     );
   }
 
-  if (!projects?.length || !currentProject) {
+  if (!currentProject) {
     return (
       <div className="container mx-auto p-8">
         <Card>
@@ -85,24 +85,29 @@ export default function InspirationPage() {
                 thumbnail={currentProject.thumbnail}
               />
 
+              <ProjectTechnologies technologies={currentProject.technologies} />
+
               <ProjectDescription description={currentProject.description} />
 
               <ProjectFooter
-                technologies={currentProject.technologies}
                 updatedAt={currentProject.updatedAt}
-                viewedProjectCount={viewedProjectCount}
-                totalProjects={totalProjects}
+                totalProjects={totalProjects ?? 0}
+                currentIndex={currentIndex}
               />
             </CardContent>
           </Card>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <InfoCard
-            viewedProjectCount={viewedProjectCount ?? 0}
-            totalProjects={totalProjects ?? 0}
-            onNextProject={handleNextProject}
-          />
+        <div className="flex flex-col-reverse md:flex-col gap-8">
+          <InfoCard />
+          <Button
+            size="lg"
+            onClick={handleNextProject}
+            className="w-full gap-2"
+          >
+            Next Project
+            <span className="rounded border px-2 py-0.5 text-xs">Space</span>
+          </Button>
         </div>
       </div>
     </div>
