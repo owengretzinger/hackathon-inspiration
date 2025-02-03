@@ -2,13 +2,13 @@
 
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { Skeleton } from "~/components/ui/skeleton";
 import {
   ProjectHeader,
   ProjectGallery,
   ProjectDescription,
   ProjectFooter,
 } from "~/components/project";
+import { ProjectSkeleton } from "~/components/project/project-skeleton";
 import { useProjects } from "~/lib/hooks/useProjects";
 
 export default function InspirationPage() {
@@ -23,8 +23,16 @@ export default function InspirationPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-8">
-        <Skeleton className="h-[600px] w-full rounded-lg" />
+      <div className="container mx-auto flex min-h-screen flex-col items-center gap-8 p-8">
+        <div className="flex w-full max-w-4xl flex-col gap-4">
+          <ProjectSkeleton />
+          <div className="flex justify-center">
+            <Button size="lg" disabled className="gap-2">
+              Next Project
+              <span className="rounded border px-2 py-0.5 text-xs">Space</span>
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
