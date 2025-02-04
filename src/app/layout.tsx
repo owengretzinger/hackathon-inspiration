@@ -33,24 +33,28 @@ export const metadata: Metadata = {
       "Get inspired for your next hackathon by exploring real winning projects from Devpost hackathons",
     type: "website",
     locale: "en_US",
-    images: [{
-      url: "/screenshot.png",
-      width: 1920,
-      height: 1080,
-      alt: "Hackathon Inspiration website showing a project card with details about a winning hackathon project"
-    }],
+    images: [
+      {
+        url: "/screenshot.png",
+        width: 1920,
+        height: 1080,
+        alt: "Hackathon Inspiration website showing a project card with details about a winning hackathon project",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Hackathon Inspiration",
     description:
       "Get inspired for your next hackathon by exploring real winning projects from Devpost hackathons",
-    images: [{
-      url: "/screenshot.png",
-      width: 1920,
-      height: 1080,
-      alt: "Hackathon Inspiration website showing a project card with details about a winning hackathon project"
-    }],
+    images: [
+      {
+        url: "/screenshot.png",
+        width: 1920,
+        height: 1080,
+        alt: "Hackathon Inspiration website showing a project card with details about a winning hackathon project",
+      },
+    ],
   },
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase: new URL("https://hackathon-inspiration.vercel.app"),
@@ -58,10 +62,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
 };
 
 export default function RootLayout({
