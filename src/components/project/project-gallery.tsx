@@ -69,7 +69,7 @@ export function ProjectGallery({
         ))}
 
         {/* Show remaining count if there are more images */}
-        {galleryImages.length > 2 && galleryImages[2] && (
+        {galleryImages.length > 3 && galleryImages[2] && (
           <div
             className="relative aspect-video cursor-pointer overflow-hidden rounded-lg transition-opacity hover:opacity-95"
             onClick={() => {
@@ -88,6 +88,22 @@ export function ProjectGallery({
                 +{galleryImages.length - 2} more
               </span>
             </div>
+          </div>
+        )}
+        {galleryImages.length === 3 && galleryImages[2] && (
+          <div
+            className="relative aspect-video cursor-pointer overflow-hidden rounded-lg transition-opacity hover:opacity-95"
+            onClick={() => {
+              setCurrentImageIndex(2);
+              setModalOpen(true);
+            }}
+          >
+            <Image
+              src={galleryImages[2].url}
+              alt={`${title} - Gallery Image 3`}
+              fill
+              className="object-cover"
+            />
           </div>
         )}
       </div>
