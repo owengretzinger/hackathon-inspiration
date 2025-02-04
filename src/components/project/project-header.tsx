@@ -145,13 +145,12 @@ export function ProjectHeader({
             <Badge
               key={i}
               variant="secondary"
-              className="flex items-center gap-1"
+              className="inline-flex items-center gap-1 max-w-full"
             >
-              🏆 {award.place}
+              <span className="flex-shrink-0">🏆{award.place}</span>
               {award.prize && (
-                <span className="text-muted-foreground">
-                  {" "}
-                  - {award.prize}
+                <span className="text-muted-foreground truncate">
+                  {" - "}{award.prize}
                 </span>
               )}
             </Badge>
