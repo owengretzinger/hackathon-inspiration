@@ -5,7 +5,7 @@
 
 <h3 align="center">Hackathon Inspiration</h3>
   <p align="center">
-    Get inspired for your next hackathon by exploring real winning projects from Devpost hackathons
+    Get inspired by exploring real winning projects from Devpost hackathons
   </p>
 </div>
 
