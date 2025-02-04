@@ -1,8 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
-import { api } from "~/trpc/react";
+import { useState, useCallback, useEffect } from "react";
+import { api, type RouterOutputs } from "~/trpc/react";
+
+type Project = RouterOutputs["inspiration"]["getProjectByIndex"];
+const BATCH_SIZE = 5; // Fetch 5 at a time to reduce API calls
 
 export function useProjects() {
-  // Get total projects first
+  const [projectQueue, setProjectQueue] = useState<Project[]>([]);
+  const [viewedCount, setViewedCount] = useState(0);
+  const [viewedIndices, setViewedIndices] = useState<Set<number>>(new Set());
+
+  // Get total count of projects
   const { data: totalProjects } = api.inspiration.getTotalProjectCount.useQuery(
     undefined,
     {
@@ -12,60 +19,50 @@ export function useProjects() {
     },
   );
 
-  // Start with a random index between 1 and totalProjects
-  const [currentIndex, setCurrentIndex] = useState<number>(() => {
-    if (!totalProjects) return 1;
-    return Math.floor(Math.random() * totalProjects) + 1;
-  });
-  const [viewedIndices, setViewedIndices] = useState<Set<number>>(() => new Set([currentIndex]));
+  // Start fetching next batch when only one project left
+  const { data: newProjects, isLoading } =
+    api.inspiration.getRandomProjects.useQuery(
+      { 
+        limit: BATCH_SIZE,
+        exclude: Array.from(viewedIndices) 
+      },
+      {
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchOnMount: false,
+        enabled: projectQueue.length <= 1 && !!totalProjects,
+      },
+    );
 
-  // Update currentIndex when totalProjects loads
+  // Update queue when new projects arrive
   useEffect(() => {
-    if (totalProjects) {
-      const randomIndex = Math.floor(Math.random() * totalProjects) + 1;
-      setCurrentIndex(randomIndex);
-      setViewedIndices(new Set([randomIndex]));
+    if (newProjects && projectQueue.length <= 1) {
+      setProjectQueue(prev => [...prev, ...newProjects]);
     }
-  }, [totalProjects]);
-
-  const { data: currentProject, isLoading: isLoadingCurrent } = api.inspiration.getProjectByIndex.useQuery(
-    { index: currentIndex },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      enabled: !!totalProjects,
-    }
-  );
-
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === "Space" && totalProjects) {
-        e.preventDefault();
-        const nextIndex = Math.floor(Math.random() * totalProjects) + 1;
-        setCurrentIndex(nextIndex);
-        setViewedIndices(prev => new Set(prev).add(nextIndex));
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [totalProjects]);
+  }, [newProjects, projectQueue.length]);
 
   const handleNextProject = useCallback(() => {
-    if (totalProjects) {
-      const nextIndex = Math.floor(Math.random() * totalProjects) + 1;
-      setCurrentIndex(nextIndex);
-      setViewedIndices(prev => new Set(prev).add(nextIndex));
+    const currentProject = projectQueue[0];
+    if (currentProject) {
+      setViewedIndices(prev => new Set(prev).add(currentProject.index));
     }
-  }, [totalProjects]);
+    
+    setProjectQueue((prev) => {
+      const [, ...rest] = prev;
+      return rest;
+    });
+    setViewedCount((prev) => prev + 1);
+  }, [projectQueue]);
+
+  const currentProject = projectQueue[0];
+  const isInitialLoading = isLoading && projectQueue.length === 0;
 
   return {
-    currentProject,
-    isLoading: isLoadingCurrent,
+    currentProject: isInitialLoading ? null : currentProject,
+    isLoading: isInitialLoading,
     totalProjects,
-    currentIndex,
-    viewedProjectCount: viewedIndices.size,
+    currentIndex: currentProject?.index ?? 0,
+    viewedProjectCount: viewedCount,
     handleNextProject,
   };
-} 
+}

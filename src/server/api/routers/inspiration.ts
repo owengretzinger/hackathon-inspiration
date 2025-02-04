@@ -2,7 +2,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { db } from "~/server/db";
 import { winningProjects } from "~/server/db/schema";
-import { sql } from "drizzle-orm";
+import { sql, eq, inArray, notInArray } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
 export const inspirationRouter = createTRPCRouter({
@@ -16,44 +16,57 @@ export const inspirationRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(10),
+        exclude: z.array(z.number()).optional(),
       }),
     )
-    .query(async ({ input }) => {
-      // Using SQL's RANDOM() function to efficiently get random rows
-      // Add OFFSET 0 to prevent query caching
-      const randomProjects = await db.query.winningProjects.findMany({
-        orderBy: sql`RANDOM() OFFSET 0`,
-        limit: input.limit,
-      });
+    .query(async ({ ctx, input }) => {
+      const query = ctx.db
+        .select()
+        .from(winningProjects);
 
-      return randomProjects;
+      if (input.exclude && input.exclude.length > 0) {
+        query.where(notInArray(winningProjects.index, input.exclude));
+      }
+
+      return await query
+        .orderBy(sql`RANDOM() OFFSET 0`)
+        .limit(input.limit);
     }),
 
   getProjectByIndex: publicProcedure
-    .input(
-      z.object({
-        index: z.number().min(1),
-      }),
-    )
-    .query(async ({ input }) => {
-      const project = await db.query.winningProjects.findFirst({
-        where: (projects, { eq }) => eq(projects.index, input.index),
-      });
+    .input(z.object({ index: z.number().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.db
+        .select()
+        .from(winningProjects)
+        .where(eq(winningProjects.index, input.index))
+        .limit(1);
 
-      if (!project) {
+      if (result.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `Project with index ${input.index} not found`,
+          message: `No project found with index ${input.index}`,
         });
       }
 
-      return project;
+      return result[0];
     }),
 
-  getTotalProjectCount: publicProcedure.query(async () => {
-    const result = await db
+  getTotalProjectCount: publicProcedure.query(async ({ ctx }) => {
+    const result = await ctx.db
       .select({ count: sql<number>`count(*)` })
       .from(winningProjects);
-    return result[0]?.count ?? 0;
+    return Number(result[0]?.count ?? 0);
   }),
+
+  getProjectsByIndices: publicProcedure
+    .input(z.object({ indices: z.array(z.number().min(1)) }))
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.db
+        .select()
+        .from(winningProjects)
+        .where(inArray(winningProjects.index, input.indices));
+
+      return result;
+    }),
 });

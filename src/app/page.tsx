@@ -23,7 +23,7 @@ export default function InspirationPage() {
   } = useProjects();
 
   // Show skeleton while loading
-  if (isLoading || !totalProjects) {
+  if (isLoading || !totalProjects || !currentProject) {
     return (
       <div className="container mx-auto flex min-h-screen flex-col items-center gap-4 p-4 sm:gap-8 sm:p-8">
         <div className="grid w-full max-w-[1600px] grid-cols-1 gap-4 sm:gap-8 lg:grid-cols-[1fr,400px]">
@@ -66,36 +66,36 @@ export default function InspirationPage() {
         <div className="flex flex-col gap-4">
           <Card className="w-full">
             <ProjectHeader
-              title={currentProject!.title}
-              demoVideo={currentProject!.demoVideo}
-              devpostUrl={currentProject!.devpostUrl}
-              githubUrl={currentProject!.githubUrl}
-              websiteUrl={currentProject!.websiteUrl}
-              engagement={currentProject!.engagement}
-              teamMembers={currentProject!.teamMembers.map((member) => ({
+              title={currentProject.title}
+              demoVideo={currentProject.demoVideo}
+              devpostUrl={currentProject.devpostUrl}
+              githubUrl={currentProject.githubUrl}
+              websiteUrl={currentProject.websiteUrl}
+              engagement={currentProject.engagement}
+              teamMembers={currentProject.teamMembers.map((member) => ({
                 name: member.name ?? null,
                 profileUrl: member.profileUrl ?? null,
                 avatarUrl: member.avatarUrl ?? null,
               }))}
-              tagline={currentProject!.tagline ?? ""}
-              awards={currentProject!.awards}
-              hackathonUrl={currentProject!.hackathonUrl}
-              hackathonName={currentProject!.hackathonName}
+              tagline={currentProject.tagline ?? ""}
+              awards={currentProject.awards}
+              hackathonUrl={currentProject.hackathonUrl}
+              hackathonName={currentProject.hackathonName}
             />
 
             <CardContent className="flex flex-col gap-6">
               <ProjectGallery
-                title={currentProject!.title}
-                galleryImages={currentProject!.galleryImages}
-                thumbnail={currentProject!.thumbnail}
+                title={currentProject.title}
+                galleryImages={currentProject.galleryImages}
+                thumbnail={currentProject.thumbnail}
               />
 
-              <ProjectTechnologies technologies={currentProject!.technologies} />
+              <ProjectTechnologies technologies={currentProject.technologies} />
 
-              <ProjectDescription description={currentProject!.description} />
+              <ProjectDescription description={currentProject.description} />
 
               <ProjectFooter
-                updatedAt={currentProject!.updatedAt}
+                updatedAt={currentProject.updatedAt}
                 totalProjects={totalProjects}
                 currentIndex={currentIndex}
               />
