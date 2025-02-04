@@ -12,6 +12,7 @@ import {
 import { ProjectSkeleton } from "~/components/project/project-skeleton";
 import { useProjects } from "~/lib/hooks/useProjects";
 import { InfoCard } from "~/components/info-card";
+import { useKeyboardNavigation } from "~/lib/hooks/useKeyboardNavigation";
 
 export default function InspirationPage() {
   const {
@@ -21,6 +22,8 @@ export default function InspirationPage() {
     handleNextProject,
     currentIndex,
   } = useProjects();
+
+  useKeyboardNavigation({ onNext: handleNextProject });
 
   // Show skeleton while loading
   if (isLoading || !totalProjects || !currentProject) {
