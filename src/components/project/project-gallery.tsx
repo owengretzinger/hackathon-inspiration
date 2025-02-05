@@ -46,6 +46,7 @@ export function ProjectGallery({
             alt={`${title} - Main Image`}
             fill
             className="object-cover"
+            unoptimized
           />
         </div>
 
@@ -64,6 +65,7 @@ export function ProjectGallery({
               alt={`${title} - Gallery Image ${index + 2}`}
               fill
               className="object-cover"
+              unoptimized
             />
           </div>
         ))}
@@ -82,6 +84,7 @@ export function ProjectGallery({
               alt={`${title} - Gallery Image 3`}
               fill
               className="object-cover"
+              unoptimized
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <span className="text-lg font-medium text-white">
@@ -103,6 +106,7 @@ export function ProjectGallery({
               alt={`${title} - Gallery Image 3`}
               fill
               className="object-cover"
+              unoptimized
             />
           </div>
         )}
@@ -145,6 +149,7 @@ export function ProjectGallery({
                   alt={`${title} - Gallery Image ${currentImageIndex + 1}`}
                   fill
                   className="object-contain"
+                  unoptimized
                 />
               </div>
             </div>
