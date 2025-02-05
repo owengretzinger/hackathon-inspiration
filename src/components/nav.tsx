@@ -20,7 +20,7 @@ export function Nav() {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-4 sm:gap-6">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/logo_transparent.png"
               alt="Logo"
@@ -36,7 +36,7 @@ export function Nav() {
               className="block h-[24px] w-[24px] dark:hidden"
             />
             <span className="text-base font-semibold sm:text-lg">
-              Hackathon Inspiration
+            Winning Hackathon Projects
             </span>
           </Link>
           <div className="hidden items-center gap-1 sm:flex">
